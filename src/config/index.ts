@@ -6,6 +6,9 @@ export const config = {
       api: '../build/router'
     }
   },
+  websocket: {
+    port: 3001
+  },
   db: {
     name: 'simplechat',
     uri: 'mongodb://localhost:27017/simplechat',
