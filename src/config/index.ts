@@ -14,7 +14,7 @@ export const config = {
     uri: 'mongodb://localhost:27017/simplechat',
     collections: {
       users: 'users',
-      conversation: 'conversation'
+      messages: 'messages'
     }
   }
 

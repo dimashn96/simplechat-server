@@ -9,6 +9,13 @@ import {DataBaseService} from './services/DataBaseService';
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-auth');
+    next();
+});
+
 // API file
 const api = require(config.server.path.api);
 
@@ -45,6 +52,8 @@ webSocketServer.on('connection', (ws) => {
 
   ws.on('message', (message) => {
     console.log('new message ' + message);
+
+    DataBaseService.addMessage(JSON.parse(message));
 
     for(var key in clients) {
       clients[key].send(message);
