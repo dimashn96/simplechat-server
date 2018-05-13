@@ -1,16 +1,47 @@
 import * as http from 'http';
 import * as WebSocket from 'ws';
-import { config } from './config';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import {config} from './config';
+import {DataBaseService} from './services/DataBaseService';
 
-const port = config.websocket.port || 8081;
+// Server
+
+const app = express();
+
+// API file
+const api = require(config.server.path.api);
+
+// Parsers
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+// API location
+app.use('/api', api);
+
+// Send all other requests this
+app.get('*', (req, res) => {
+    res.send({status: 'OK'});
+});
+
+// Set port
+const port = process.env.PORT || config.server.port;
+app.set('port', port);
+
+const server = http.createServer(app);
+server.listen(port, () => console.log(`Server running on port: ${port}`));
+
+// WebSocket Server
+
+const wsPort = config.websocket.port || 8081;
 const clients = {}; 
-const webSocketServer = new WebSocket.Server({port});
+const webSocketServer = new WebSocket.Server({port: wsPort});
 
 webSocketServer.on('connection', (ws) => {
 
   var id = Math.random();
   clients[id] = ws;
-  console.log("new connection " + id);
+  console.log('new connection ' + id);
 
   ws.on('message', (message) => {
     console.log('new message ' + message);
@@ -27,4 +58,8 @@ webSocketServer.on('connection', (ws) => {
 
 });
 
-console.log(`Server running on ${port}`);
+console.log(`WebSocket server running on port: ${wsPort}`);
+
+// Mongoose
+
+DataBaseService.connect();
