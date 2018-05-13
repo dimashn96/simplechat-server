@@ -46,6 +46,10 @@ export class DataBaseService {
         return User.find({name})
     }
 
+    public static getUsers() {
+        return User.find({})
+    }
+
     public static addMessage(message) {
         console.log(message);
         const newMessage = new Message(message);

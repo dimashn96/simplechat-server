@@ -20,6 +20,15 @@ router.get('/user/:name', (req, res) => {
     })
 });
 
+// Get users
+router.get('/users', (req, res) => {
+    DataBaseService.getUsers()
+    .exec((err, users) => {
+        if (err) throw err;
+        res.send(users);
+    })
+});
+
 // Get messages
 router.get('/messages', (req, res) => {
     DataBaseService.getMessages()
